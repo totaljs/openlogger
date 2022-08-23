@@ -7,7 +7,7 @@
       "url": "https://github.com/totaljs/openlogger"
   },
   "dependencies": {
-    "total4": "latest"
+    "total4": "betra"
   },
   "scripts": {
     "start": "node index.js 8000"
