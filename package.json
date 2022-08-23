@@ -1,0 +1,21 @@
+{
+  "name": "OpenLogger",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/totaljs/openlogger"
+  },
+  "dependencies": {
+    "total4": "latest"
+  },
+  "scripts": {
+    "start": "node index.js 8000"
+  },
+  "keywords": [
+    "logs",
+    "logger"
+  ],
+  "author": "Peter Širka",
+  "license":"MIT"
+}
