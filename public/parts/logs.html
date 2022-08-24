@@ -4,12 +4,13 @@
 		<div class="toolbar pull-right" style="margin:10px 0 0 0" data-bind="?.items__enable .op:value && value.count">
 			<button class="exec" data-exec="?/refresh"><i class="fas fa-sync"></i>@(Refresh)</button>
 			<button class="exec op" data-exec="?/download" disabled><i class="fa fa-cloud-download"></i>@(Download)</button>
-			<button class="exec op" data-exec="?/clear" disabled><i class="far fa-trash-alt red"></i>@(Clear)</button>
+			<button class="exec" data-bind="?.checked__enable:value && value.length" data-exec="?/remove" disabled><i class="far fa-trash-alt red"></i>@(Remove)</button>
+			<button class="exec op" data-exec="?/clear" disabled><i class="fas fa-recycle red"></i>@(Clear)</button>
 		</div>
 		<label><i class="fa fa-history"></i>@(Logs)</label>
 	</header>
 
-	<div data---="datagrid__?.items__height:window;exec:?/filter;dblclick:?/detail;highlight:1;checkbox:0;noborder:1;margin:50">
+	<div data---="datagrid__?.items__height:window;exec:?/filter;dblclick:?/detail;highlight:1;checkbox:1;noborder:1;margin:50;checked:?.checked">
 		<script type="text/plain">
 			[
 				{ name: 'app', text: '@(App)', width: 150, colorize: 1 },
@@ -28,7 +29,7 @@
 	</div>
 </div>
 
-<div data---="panel__common.form__if:logform;icon:fas fa-history;title:@(Log detail);width:500" data-scope="logform" class="hidden invisible">
+<div data---="panel__common.form__if:logform;icon:fas fa-history;title:@(Log detail);width:600" data-scope="logform" class="hidden invisible">
 	<div>
 		<div data---="detail__?__style:3;defaultgroup:@(Data)" style="padding:10px">
 			<script type="text/plain">
@@ -74,8 +75,15 @@
 			}
 		};
 
+		exports.remove = function() {
+			var id = exports.model.checked.map(n => n.id).join(',');
+			SETTER('approve/show', '@(Are you sure you want to remove selected logs from the database?)', '"trash-o" @(Remove)', function() {
+				TAPI('logs_remove?id=' + id, ERROR(exports.refresh));
+			});
+		};
+
 		exports.clear = function() {
-			SETTER('approve/show', '@(Are you sure you want to clear all logs from database?)', '"trash-o" @(Clear)', function() {
+			SETTER('approve/show', '@(Are you sure you want to clear all logs from the database?)', '"fas fa-recycle" @(Clear)', function() {
 				TAPI('logs_clear', ERROR(exports.refresh));
 			});
 		};

@@ -8,6 +8,7 @@ exports.install = function() {
 	ROUTE('API    @setup    -list                      *Setup        --> list');
 	ROUTE('API    @setup    -usage                     *Setup        --> consumption');
 	ROUTE('API    @setup    -logs                      *Logs         --> query');
+	ROUTE('API    @setup    -logs_remove               *Logs         --> remove');
 	ROUTE('API    @setup    -logs_clear                *Logs         --> clear');
 	ROUTE('API    @setup    -config_read/{id}          *Config       --> read');
 	ROUTE('API    @setup    +config_save               *Config       --> save');
