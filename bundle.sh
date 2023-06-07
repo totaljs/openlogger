@@ -3,8 +3,9 @@ mkdir -p .bundle
 cd .bundle
 cp -a ../controllers/ controllers
 cp -a ../definitions/ definitions
+cp -a ../modules/ modules
+cp -a ../plugins/ plugins
 cp -a ../public/ public
-cp -a ../schemas/ schemas
 cp -a ../views/ views
 
 # cd ..

@@ -1,0 +1,24 @@
+<div data---="panel__common.form__if:~PATH~;icon:fas fa-history;title:@(Log detail);width:600" plugin="~PATH~" class="~PATH~ hidden invisible">
+	<div>
+		<ui-component name="detail" path="?" config="style:3;defaultgroup:@(Data)" style="padding:10px">
+			<script type="text/plain">
+				[
+					{ name: '@(Application)', path: 'app', type: 'string' },
+					{ name: '@(Type)', path: 'type', type: 'string' },
+					{ name: '@(Schema)', path: 'schema', type: 'string' },
+					{ name: '@(User ID)', path: 'userid', type: 'string' },
+					{ name: '@(User name)', path: 'username', type: 'string' },
+					{ name: '@(IP address)', path: 'ip', type: 'string' },
+					{ name: '@(URL address)', path: 'url', type: 'string' },
+					{ name: '@(Device)', path: 'ua', type: 'string' },
+					{ name: '@(Message)', path: 'message', type: 'string' },
+					{ name: '@(Created)', path: 'dtcreated', type: 'date', format: '[ts]' }
+				]
+			</script>
+		</ui-component>
+
+		<ui-bind path="?.data" config="visible" class="padding block">
+			<ui-bind path="?.data" config="html:Thelpers.jsonformat(PARSE(value))" class="json"></ui-bind>
+		</ui-bind>
+	</div>
+</div>

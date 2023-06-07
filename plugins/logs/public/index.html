@@ -1,0 +1,102 @@
+<style>
+	.CLASS .listing2 { column-gap: 7px; }
+	.CLASS .listing2 figure { margin-bottom: 7px; }
+	.CLASS .listing2 figure:hover { filter:brightness(0.9); }
+	.CLASS .controls { border-left: 1px solid rgba(0,0,0,0.1); padding: 0 8px 0 15px; line-height: 40px; height: 40px; }
+	.CLASS .icon { border-right: 1px solid rgba(0,0,0,0.1); margin-right: 8px; padding: 0 15px 0 8px; text-align: center; float: left; line-height: 40px; height: 40px; font-size: 20px; }
+</style>
+
+<ui-plugin config="aclass:1">
+	<header>
+		<label><i class="ti ti-history"></i>@(Logs)</label>
+		<div class="toolbar">
+			<ui-bind path="?.checked" config="enable:value && value.length" child=".remove">
+				<button class="exec" data-exec="?/refresh"><i class="ti ti-refresh"></i>@(Refresh)</button>
+				<button class="exec" data-exec="?/download"><i class="ti ti-cloud-download"></i>@(Download)</button>
+				<button class="exec remove" data-exec="?/remove" disabled><i class="ti ti-trash red"></i>@(Remove)</button>
+				<button class="exec" data-exec="?/clear"><i class="ti ti-recycle red"></i>@(Clear)</button>
+			</ui-bind>
+		</div>
+	</header>
+
+	<ui-component name="empty" path="?.items" config="parent:auto">
+		<script type="text/html">
+			<div>@(The logs doesn't contain any logs)</div>
+		</script>
+		<ui-component name="datagrid" path="?.items" config="height:window;exec:?/filter;dblclick:?/detail;highlight:1;checkbox:1;noborder:1;margin:60;checked:?.checked">
+			<script type="text/plain">
+				[
+					{ name: 'app', text: '@(App)', width: 150, colorize: 1 },
+					{ name: 'type', text: '@(Type)', width: 120, align: 1 },
+					{ name: 'dtcreated', text: '@(Created)', width: 140, align: 1, format: '[ts]' },
+					{ name: 'schema', text: '@(Schema)', width: 200, colorize: true },
+					{ name: 'userid', text: '@(User ID)', width: 140, hide: true },
+					{ name: 'username', text: '@(User)', width: 200 },
+					{ name: 'message', text: '@(Message)', width: 300, class: 'gray' },
+					{ name: 'ua', text: '@(Device)', width: 200 },
+					{ name: 'url', text: '@(URL address)', width: 200 },
+					{ name: 'ip', text: '@(IP address)', width: 200, align: 1 },
+					{ name: 'data', text: '@(Data)', width: 500, sort: false, hide: true }
+				]
+			</script>
+		</ui-component>
+	</ui-component>
+</ui-plugin>
+
+<ui-component name="importer" path="common.form" config="if:formdetail;url:@{#}/~ID~/forms/detail.html"></ui-component>
+
+<script>
+	PLUGIN(function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function(el) {
+			el && el.find('i').aclass('ti-spin').rclass('ti-spin', 1000);
+			exports.nul('items');
+		};
+
+		exports.filter = function(type, filter, sort, page) {
+
+			if (type === 'init')
+				return;
+
+			if (filter == null)
+				filter = {};
+
+			filter.page = page || 1;
+			filter.sort = sort;
+
+			exports.tapi(QUERIFY('logs', filter), ERROR(function(response) {
+				SET('?.items', response);
+			}));
+		};
+
+		exports.detail = function(row, grid, el) {
+			if (row) {
+				SET('formdetail', row);
+				SET('common.form', 'formdetail');
+			}
+		};
+
+		exports.remove = function() {
+			var id = exports.model.checked.map(n => n.id).join(',');
+			SETTER('approve/show', '@(Are you sure you want to remove selected logs from the database?)', '"ti ti-trash" @(Remove)', function() {
+				exports.tapi('logs_remove?id=' + id, ERROR(exports.refresh));
+			});
+		};
+
+		exports.clear = function() {
+			SETTER('approve/show', '@(Are you sure you want to clear all logs from the database?)', '"ti ti-recycle" @(Clear)', function() {
+				TAPI('logs_clear', ERROR(exports.refresh));
+			});
+		};
+
+		exports.download = function() {
+			location.href = '/api/download/?token=' + NAV.query.token;
+		};
+
+	});
+
+</script>
